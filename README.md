@@ -12,6 +12,11 @@ Slay the Spire 2のフールの旋律を「チョ・ワー・ヨ」にする音�
 
 ## 導入
 
+[Steam Workshopでサブスクライブ](https://steamcommunity.com/sharedfiles/filedetails/?id=3841064982)
+
+Steam版はサブスクライブ後にダウンロードを待ち、設定 → MOD設定で「チョワヨ」を有効にします。
+手動でZIP版を入れている場合は、ゲームを終了して既存の `mods/Chowayo` を別の場所へ移してから切り替えてください。
+
 [音声入りZIPをダウンロード](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.3.1/Chowayo-v0.3.1-with-audio.zip)
 
 1. SteamでSlay the Spire 2のゲームのバージョンを `public-beta` にします。
