@@ -1,0 +1,15 @@
+bin/
+obj/
+.artifacts/
+.DS_Store
+local.props
+.env
+.env.*
+*.dll
+*.pdb
+*.save
+*.save.*
+*.zip
+*.log
+__pycache__/
+mods/Chowayo/local-audio/

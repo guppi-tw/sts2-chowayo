@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>チョワヨ 音声プレビュー</title>
+<style>
+:root{color-scheme:light;--bg:#f1f3f0;--panel:#fff;--bar:#e4e9e3;--line:#929f95;--ink:#24332b;--muted:#53665b;--accent:#20674a;--on-accent:#fff;--soft:#dceee3;--shadow:0 3px 0 #22392b12;--edge:2px solid var(--line);--cho:#28835e;--wa:#a87518;--yo:#7165b2}
+:root[data-theme=dark]{color-scheme:dark;--bg:#18201d;--panel:#232e28;--bar:#303d35;--line:#738678;--ink:#ecf2eb;--muted:#b4c5b8;--accent:#96dab4;--on-accent:#153824;--soft:#324e3d;--shadow:0 3px 0 #0004;--cho:#71c99d;--wa:#e9ba65;--yo:#b4a3ec}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,-apple-system,"Hiragino Sans",sans-serif}button,input,select{font:inherit}button,select,.file-button{border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);padding:8px 13px;cursor:pointer}button:hover,.file-button:hover{background:var(--soft)}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,.file-button:focus-within{outline:3px solid var(--accent);outline-offset:3px}button:disabled{opacity:.45;cursor:default}button.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:650}header{background:var(--bar);border-bottom:var(--edge);box-shadow:var(--shadow)}.header-inner{max-width:1060px;margin:auto;padding:16px 24px;display:flex;align-items:center;gap:14px}h1{font-size:18px;margin:0;font-weight:700}.badge{font-size:11px;border:1px solid var(--line);padding:2px 8px;border-radius:20px;color:var(--muted)}#theme{margin-left:auto;padding:5px 11px}main{max-width:1060px;padding:24px;margin:auto}.source-tabs{display:flex;gap:8px;margin-bottom:18px}.source-tabs button{flex:1;text-align:left;padding:12px 16px;border-width:2px}.source-tabs button[aria-pressed=true]{border-color:var(--accent);background:var(--soft)}.source-tabs strong{display:block;font-size:15px}.source-tabs span{color:var(--muted);font-size:12px}.panel{border:var(--edge);border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow)}.source-info{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:var(--edge);background:var(--bar)}.source-info strong{font-size:14px}small,.muted{color:var(--muted)}.source-info .file-button{margin-left:auto;font-size:12px;padding:5px 10px}.file-button input{position:absolute;width:1px;height:1px;opacity:0}.wave-area{padding:18px 22px 0}.wave-wrap{position:relative;height:205px;margin:0 7px;touch-action:pan-y}canvas{width:100%;height:100%;display:block}.handle{position:absolute;top:20px;bottom:25px;width:16px;transform:translateX(-50%);border:0;padding:0;background:transparent!important;cursor:ew-resize;touch-action:none;z-index:2}.handle:before{content:"";position:absolute;top:0;bottom:0;left:7px;width:2px;background:var(--accent)}.handle:after{content:"";position:absolute;top:-1px;left:2px;width:12px;height:19px;border-radius:4px;background:var(--accent);border:2px solid var(--panel)}.handle:focus-visible{outline-offset:1px;border-radius:3px}.wave-hint{font-size:12px;color:var(--muted);margin:0 0 17px}.transport{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:14px 18px;background:var(--bar);border-block:var(--edge)}.transport select{max-width:100%;font-size:12px}.status{margin-left:auto;font-size:12px;color:var(--muted);min-width:80px}.clip-list{padding:0 18px}.clip-row{display:grid;grid-template-columns:110px minmax(180px,1fr) 65px auto;gap:15px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line)}.clip-row:last-child{border-bottom:0}.clip-label{display:flex;align-items:center;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:var(--cho);flex-shrink:0}.clip-label b{font-size:18px}.clip-label small{display:block;font-size:11px;line-height:1.2}.cut-inputs{display:flex;align-items:center;gap:8px}.cut-inputs label{display:flex;flex-direction:column;font-size:10px;color:var(--muted);flex:1;max-width:112px}.cut-inputs input{font:14px ui-monospace,monospace;width:100%;border:1px solid var(--line);border-radius:5px;padding:7px;background:var(--bg);color:var(--ink)}.duration{font:12px ui-monospace,monospace;color:var(--muted)}.clip-actions{display:flex;gap:7px}.clip-actions button{font-size:12px;padding:7px 10px}.settings{display:flex;align-items:center;flex-wrap:wrap;gap:20px;margin:18px 0}.volume{display:flex;align-items:center;gap:9px;font-size:12px}.volume input{width:110px;accent-color:var(--accent)}#volume-value{width:35px;font-variant-numeric:tabular-nums}.fade{font-size:12px;display:flex;align-items:center;gap:8px}.fade select{padding:5px 10px}.exports{margin-left:auto;display:flex;gap:8px}.exports button{font-size:12px}footer{font-size:12px;color:var(--muted);border-top:var(--edge);padding-top:14px}footer p{margin:3px 0}a{color:var(--accent)}.clip-row.playing{background:var(--soft)}.notice{font-size:12px;color:var(--muted);margin:12px 0 0}#status[data-error=true]{color:#c44d40}
+@media(max-width:720px){.header-inner{padding:12px 16px;gap:7px}h1{font-size:16px}.badge{display:none}main{padding:16px}.source-tabs{gap:6px}.source-tabs button{padding:10px}.clip-row{grid-template-columns:85px 1fr 55px;gap:9px}.clip-actions{grid-column:1/-1;justify-content:flex-end}.wave-area{padding:14px 12px 0}.wave-wrap{height:170px}.transport{padding:12px;gap:7px}.transport button{padding:8px 10px}.status{width:100%;margin-left:0}.exports{margin-left:0}.settings{gap:14px}.source-info{padding:12px}.source-info .file-button{margin-left:0}.source-tabs span{font-size:11px}.clip-list{padding:0 12px}.cut-inputs{gap:5px}.cut-inputs input{font-size:13px;padding:6px}.clip-label b{font-size:16px}}
+.candidate-picker{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:0 0 16px;padding:12px 15px;background:var(--bar);border:var(--edge);border-radius:9px;box-shadow:var(--shadow)}.candidate-picker label{display:flex;align-items:center;gap:8px;font-size:12px}.candidate-picker select{max-width:100%;font-size:12px;min-width:0}.candidate-picker span{font-size:12px;color:var(--muted)}[hidden]{display:none!important}
+@media(max-width:720px){.source-tabs{flex-wrap:wrap}.source-tabs button{flex:1 0 28%;min-width:0}.candidate-picker label{width:100%;flex-wrap:wrap}.candidate-picker select{flex:1}.candidate-picker{padding:10px}.source-info strong{overflow-wrap:anywhere;max-width:100%}}
+</style>
+<header><div class="header-inner"><h1>チョワヨ 音声プレビュー</h1><span class="badge">ローカル素材</span><button id="theme" aria-label="配色を切り替える">配色</button></div></header>
+<main>
+  <nav class="source-tabs" aria-label="音声素材"></nav>
+  <div class="candidate-picker"><label>素材の候補<select id="candidate" aria-label="素材の候補"></select></label><label id="phrase-label" hidden>歌の中の位置<select id="phrase" aria-label="歌の中の位置"><option value="0">1回目のチョワヨ</option><option value="1" selected>2回目のチョワヨ</option><option value="2">最後のチョワヨ</option></select></label><span id="candidate-note"></span></div>
+  <div class="panel">
+    <div class="source-info"><strong id="source-title"></strong><small id="source-length"></small><label class="file-button">別の素材を試す<input id="file" type="file" accept="audio/*"></label></div>
+    <div class="wave-area"><div class="wave-wrap"><canvas aria-label="元音声の波形"></canvas><div id="handles"></div></div><p class="wave-hint">境界をドラッグして区切りを調整 · 矢印キーで1 msずつ移動 · 下の数値でも指定できます</p></div>
+    <div class="transport"><button id="original">▶ 元音声</button><button class="primary" id="joined">▶ つなげて試聴</button><select id="spacing" aria-label="つなげる間隔"><option value="0">隙間なくつなげる</option><option value="0.5">ゲームの間隔で再生</option></select><button id="stop" disabled>■ 停止</button><span id="status" class="status" role="status" aria-live="polite">準備中</span></div>
+    <div class="clip-list" id="clips"></div>
+  </div>
+  <div class="settings"><label class="volume">試聴音量<input id="volume" type="range" min="0" max="100" value="60"><output id="volume-value">60%</output></label><label class="fade">端のフェード<select id="fade"><option value="0">なし</option><option value="2">2 ms</option><option value="4" selected>4 ms</option><option value="8">8 ms</option><option value="15">15 ms</option></select></label><div class="exports"><button id="reset">この素材を初期値に戻す</button><button id="export">設定を書き出す</button></div></div>
+  <footer><p>試聴とWAV保存はこの画面で完結します。MODに反映する場合は、保存したWAVを音声ファイルと差し替えてください。</p><p>調整した区切りは「設定を書き出す」で残せます。ゲームの間隔は各音の開始を0.5秒ずつずらした目安です。</p><p>素材 <a id="credit" target="_blank" rel="noopener noreferrer">スピキ音声素材ページ</a> · WAV出力はモノラル 48 kHz · 試聴音量は保存するWAVに影響しません</p></footer>
+</main>
+<script id="audio-data" type="application/json">__AUDIO_DATA__</script>
+<script>
+'use strict';
+const data = JSON.parse(document.querySelector('#audio-data').textContent), assets=data.slots, candidates=data.candidates;
+const $ = selector => document.querySelector(selector);
+const colors = ['--cho', '--wa', '--yo'];
+const states = assets.map(a => ({...a, boundaries:[...a.boundaries], originalBoundaries:[...a.boundaries], fade:4, buffer:null, current:[], custom:false}));
+let selected = 0, context, master, sources = [], playback = null, request = 0;
+const active = () => states[selected];
+const status = (message, error=false) => { $('#status').textContent=message; $('#status').dataset.error=error; };
+function audioContext() {
+  if (!context) { context = new AudioContext({sampleRate:48000}); master=context.createGain(); master.gain.value=+$('#volume').value/100; master.connect(context.destination); }
+  return context;
+}
+function bytes(base64) { return Uint8Array.from(atob(base64), c=>c.charCodeAt(0)).buffer; }
+async function decode(s) {
+  if (!s.loading) s.loading = (async()=>{ const ctx=audioContext(); s.buffer=await ctx.decodeAudioData(bytes(s.audio)); s.current=await Promise.all(s.clips.map(c=>c.audio?ctx.decodeAudioData(bytes(c.audio)):null)); return s; })();
+  return s.loading;
+}
+function stop() { request++; for(const source of sources) { try{source.stop();}catch{} source.disconnect(); } sources=[];playback=null;$('#stop').disabled=true;document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));status('停止中');draw(); }
+function mono(buffer) {
+  const out=new Float32Array(buffer.length);
+  for(let c=0;c<buffer.numberOfChannels;c++){const ch=buffer.getChannelData(c);for(let i=0;i<out.length;i++)out[i]+=ch[i]/buffer.numberOfChannels;}
+  return out;
+}
+function cut(s,index) {
+  const raw=mono(s.buffer), rate=s.buffer.sampleRate, from=Math.round(s.boundaries[index]*rate), to=Math.round(s.boundaries[index+1]*rate);
+  const samples=raw.slice(from,to);
+  let peak=0;for(const x of samples)peak=Math.max(peak,Math.abs(x));
+  const gain=peak?((s.id==='melody'?.8:.7)*32767/32768)/peak:1, fade=Math.round(s.fade*rate/1000);
+  for(let i=0;i<samples.length;i++)samples[i]=Math.round(Math.max(-1,Math.min(32767/32768,samples[i]*gain*(fade?Math.min(1,i/fade,(samples.length-1-i)/fade):1)))*32768)/32768;
+  const buffer=audioContext().createBuffer(1,samples.length,rate);buffer.copyToChannel(samples,0);return buffer;
+}
+async function play(mode,index=0) {
+  stop();const token=request,s=active();
+  try {
+    await audioContext().resume();await decode(s);if(token!==request)return;
+    let clips;
+    if(mode==='original')clips=[{buffer:s.buffer,from:0,index:-1}];
+    else if(mode==='current')clips=[{buffer:s.current[index],from:!s.custom&&s.sha256===assets[selected].sha256?s.originalBoundaries[index]:null,index}];
+    else if(mode==='cut')clips=[{buffer:cut(s,index),from:s.boundaries[index],index}];
+    else clips=s.clips.map((_,i)=>({buffer:cut(s,i),from:s.boundaries[i],index:i}));
+    const now=context.currentTime+.03;let offset=0;
+    for(const clip of clips){clip.at=now+offset;clip.end=clip.at+clip.buffer.duration;const src=context.createBufferSource();src.buffer=clip.buffer;src.connect(master);src.start(clip.at);sources.push(src);offset+=mode==='joined'&&+$('#spacing').value?+$('#spacing').value:clip.buffer.duration;}
+    playback={clips,end:Math.max(...clips.map(c=>c.end)),mode};$('#stop').disabled=false;status(mode==='original'?'元音声を再生中':mode==='current'?'現在のMODを再生中':'調整後を再生中');
+  }catch(error){stop();status('再生できません '+error.message,true);}
+}
+function setBoundary(index,value){
+  const s=active();if(!Number.isFinite(value))return;
+  stop();const low=index?s.boundaries[index-1]+.01:0, high=index===s.boundaries.length-1?s.buffer.duration:s.boundaries[index+1]-.01;
+  s.boundaries[index]=Math.max(low,Math.min(high,Math.round(value*1000)/1000));sync();
+}
+function sync(){
+  const s=active();
+  document.querySelectorAll('[data-boundary]').forEach(el=>{const i=+el.dataset.boundary;el.value=s.boundaries[i].toFixed(3);});
+  document.querySelectorAll('.duration').forEach((el,i)=>el.textContent=(s.boundaries[i+1]-s.boundaries[i]).toFixed(3)+' s');
+  document.querySelectorAll('.handle').forEach((el,i)=>{el.style.left=s.boundaries[i]/s.buffer.duration*100+'%';el.setAttribute('aria-valuenow',s.boundaries[i].toFixed(3));el.setAttribute('aria-valuemin',i?s.boundaries[i-1]+.01:0);el.setAttribute('aria-valuemax',i===s.boundaries.length-1?s.buffer.duration:s.boundaries[i+1]-.01);el.setAttribute('aria-valuetext',s.boundaries[i].toFixed(3)+' 秒');});
+  draw();
+}
+async function show(index){
+  stop();selected=index;const s=active();status('音声を読み込み中');
+  try{await decode(s);if(active()!==s)return;
+    $('.source-tabs').querySelectorAll('button').forEach((el,i)=>el.setAttribute('aria-pressed',i===index));
+    $('#source-title').textContent=s.custom?s.customName:s.title;$('#source-length').textContent=s.buffer.duration.toFixed(3)+' 秒'+(s.custom?' · 選択した素材':' · 元素材');$('#credit').href=s.source;$('#candidate').value=s.candidateId||'';
+    const candidate=candidates.find(c=>c.id===s.candidateId);$('#candidate-note').textContent=candidate?candidate.use+'向けの候補 · 区切りは仮設定です':'元素材と現在のMOD音声を比較できます';$('#phrase-label').hidden=s.id!=='melody'||!candidate||candidate.phrases.length<2;$('#phrase').value=s.phraseIndex??1;
+    $('#fade').value=s.fade;$('#spacing').hidden=s.clips.length===1;$('#joined').textContent=s.clips.length===1?'▶ 切り出して試聴':'▶ つなげて試聴';
+    $('#clips').innerHTML=s.clips.map((c,i)=>`<div class="clip-row" data-clip="${i}"><div class="clip-label"><span class="dot" style="background:var(${colors[i]})"></span><div><b>${c.label}</b><small>${c.id}.wav</small></div></div><div class="cut-inputs"><label>開始 秒<input type="number" step="0.001" min="0" max="${s.buffer.duration}" data-boundary="${i}" aria-label="${c.label}の開始"></label><span class="muted">→</span><label>終了 秒<input type="number" step="0.001" min="0" max="${s.buffer.duration}" data-boundary="${i+1}" aria-label="${c.label}の終了"></label></div><span class="duration"></span><div class="clip-actions"><button data-action="cut" data-index="${i}" aria-label="${c.label}の調整後を試聴">▶ 試聴</button><button data-action="current" data-index="${i}" aria-label="${c.label}の現在のMOD音声を試聴">今のMOD</button><button data-action="save" data-index="${i}" aria-label="${c.label}のWAVを保存">WAV保存</button></div></div>`).join('');
+    $('#clips').querySelectorAll('[data-action="current"]').forEach((el,i)=>{el.disabled=!s.current[i];if(!s.current[i])el.textContent='MOD未設定';});
+    $('#handles').innerHTML=s.boundaries.map((_,i)=>`<button class="handle" role="slider" aria-label="${i===0?'切り出し開始':i===s.boundaries.length-1?'切り出し終了':s.clips[i-1].label+'と'+s.clips[i].label+'の境界'}" data-index="${i}"></button>`).join('');sync();status('停止中');
+  }catch(error){status('読み込めません '+error.message,true);}
+}
+function draw(){
+  const s=active();if(!s.buffer)return;const canvas=$('canvas'),r=canvas.getBoundingClientRect(),ratio=devicePixelRatio||1;
+  if(canvas.width!==Math.round(r.width*ratio)||canvas.height!==Math.round(r.height*ratio)){canvas.width=Math.round(r.width*ratio);canvas.height=Math.round(r.height*ratio);}
+  const g=canvas.getContext('2d');g.setTransform(ratio,0,0,ratio,0,0);const w=r.width,h=r.height,top=36,bottom=h-30,mid=(top+bottom)/2;
+  const css=getComputedStyle(document.documentElement),color=k=>css.getPropertyValue(k).trim(),x=t=>t/s.buffer.duration*w;
+  g.clearRect(0,0,w,h);
+  for(let i=0;i<s.clips.length;i++){g.fillStyle=color(colors[i]);g.globalAlpha=.11;g.fillRect(x(s.boundaries[i]),top,x(s.boundaries[i+1]-s.boundaries[i]),bottom-top);g.globalAlpha=1;g.font='bold 12px system-ui';g.textAlign='center';g.fillText(s.clips[i].label,x((s.boundaries[i]+s.boundaries[i+1])/2),13);}
+  const raw=s.waveform||(s.waveform=mono(s.buffer)),stride=Math.max(1,Math.floor(raw.length/w));
+  g.strokeStyle=color('--muted');g.globalAlpha=.75;g.beginPath();for(let px=0;px<w;px++){let lo=0,hi=0;const start=Math.floor(px/w*raw.length);for(let j=start;j<Math.min(raw.length,start+stride);j++){lo=Math.min(lo,raw[j]);hi=Math.max(hi,raw[j]);}g.moveTo(px,mid+lo*(bottom-top)/2);g.lineTo(px,mid+hi*(bottom-top)/2);}g.stroke();g.globalAlpha=1;
+  g.font='11px ui-monospace,monospace';g.fillStyle=color('--muted');for(let t=0;t<=s.buffer.duration+.0001;t+=s.buffer.duration>4?1:.2){g.textAlign=t===0?'left':t>s.buffer.duration-.05?'right':'center';g.fillText(t.toFixed(1),x(t),h-6);}
+  if(playback){const clip=playback.clips.find(c=>context.currentTime>=c.at&&context.currentTime<c.end);if(clip&&clip.from!==null){g.strokeStyle=color('--ink');g.lineWidth=2;g.beginPath();const px=x(clip.from+context.currentTime-clip.at);g.moveTo(px,top);g.lineTo(px,bottom);g.stroke();g.lineWidth=1;}}
+}
+function tick(){if(playback){if(context.currentTime>=playback.end)stop();else{draw();document.querySelectorAll('.clip-row').forEach((el,i)=>el.classList.toggle('playing',playback.clips.some(c=>c.index===i&&context.currentTime>=c.at&&context.currentTime<c.end)));}}requestAnimationFrame(tick);}
+function wav(buffer){
+  const data=buffer.getChannelData(0),bytes=new ArrayBuffer(44+data.length*2),view=new DataView(bytes),word=(at,s)=>{for(let i=0;i<s.length;i++)view.setUint8(at+i,s.charCodeAt(i));};
+  word(0,'RIFF');view.setUint32(4,36+data.length*2,true);word(8,'WAVE');word(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,buffer.sampleRate,true);view.setUint32(28,buffer.sampleRate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);word(36,'data');view.setUint32(40,data.length*2,true);for(let i=0;i<data.length;i++)view.setInt16(44+i*2,Math.round(Math.max(-1,Math.min(32767/32768,data[i]))*32768),true);return new Blob([bytes],{type:'audio/wav'});
+}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+$('.source-tabs').innerHTML=states.map((s,i)=>`<button data-index="${i}" aria-pressed="${i===0}"><strong>${s.label}</strong><span>${s.id==='victory'?'戦闘に勝ったとき':s.id==='defeat'?'ゲームオーバー':s.clips.map(c=>c.label).join(' → ')}</span></button>`).join('');
+$('#candidate').append(new Option('最初の素材',''));
+for(const c of [...candidates].sort((a,b)=>Number(b.id.startsWith('chowayo'))-Number(a.id.startsWith('chowayo'))))$('#candidate').append(new Option(c.label+' · '+c.duration.toFixed(1)+'秒',c.id));
+$('#candidate').onchange=async()=>{const id=$('#candidate').value;if(!id){$('#reset').click();return;}stop();const s=active(),i=selected,c=candidates.find(c=>c.id===id),revision=s.revision=(s.revision||0)+1;try{await decode(s);const buffer=await audioContext().decodeAudioData(bytes(c.audio));if(s.revision!==revision||states[i]!==s)return;s.audio=c.audio;s.buffer=buffer;s.waveform=null;s.title=c.title;s.sha256=c.sha256;s.custom=false;s.candidateId=id;s.phraseIndex=c.phrases.length>1?1:0;s.boundaries=s.id==='melody'&&c.phrases.length?[...c.phrases[s.phraseIndex]]:Array.from({length:s.clips.length+1},(_,j)=>buffer.duration*j/s.clips.length);if(i===selected)show(i);}catch(error){status(error.message,true);}};
+$('#phrase').onchange=()=>{stop();const s=active(),c=candidates.find(c=>c.id===s.candidateId);s.phraseIndex=+$('#phrase').value;s.boundaries=[...c.phrases[s.phraseIndex]];sync();};
+$('.source-tabs').onclick=e=>{const b=e.target.closest('button');if(b)show(+b.dataset.index);};
+$('#clips').onchange=e=>{if(e.target.matches('[data-boundary]')){setBoundary(+e.target.dataset.boundary,e.target.valueAsNumber);sync();}};
+$('#clips').onclick=e=>{const b=e.target.closest('[data-action]');if(!b)return;const i=+b.dataset.index;if(b.dataset.action==='save'){download(wav(cut(active(),i)),active().clips[i].id+'.wav');status(active().clips[i].id+'.wav を保存');}else play(b.dataset.action,i);};
+$('#handles').onpointerdown=e=>{const el=e.target.closest('.handle');if(!el)return;e.preventDefault();el.focus();el.setPointerCapture(e.pointerId);const move=ev=>{const r=$('.wave-wrap').getBoundingClientRect();setBoundary(+el.dataset.index,(ev.clientX-r.left)/r.width*active().buffer.duration);};el.onpointermove=move;el.onpointerup=el.onpointercancel=()=>{el.onpointermove=null;};};
+$('#handles').onkeydown=e=>{if(!e.target.matches('.handle'))return;const i=+e.target.dataset.index,delta=e.shiftKey?.01:.001;if(['ArrowLeft','ArrowDown','ArrowRight','ArrowUp'].includes(e.key)){e.preventDefault();setBoundary(i,active().boundaries[i]+(['ArrowLeft','ArrowDown'].includes(e.key)?-delta:delta));}};
+$('#original').onclick=()=>play('original');$('#joined').onclick=()=>play('joined');$('#stop').onclick=stop;
+$('#volume').oninput=()=>{const v=+$('#volume').value;$('#volume-value').value=v+'%';if(master)master.gain.setTargetAtTime(v/100,context.currentTime,.01);};
+$('#fade').onchange=()=>{stop();active().fade=+$('#fade').value;};$('#spacing').onchange=stop;
+$('#reset').onclick=()=>{const i=selected,s=states[i];stop();states[i]={...assets[i],boundaries:[...assets[i].boundaries],originalBoundaries:[...assets[i].boundaries],fade:4,buffer:null,current:[],custom:false};show(i);};
+$('#export').onclick=()=>{const settings={format:'chowayo-cuts-v1',sampleRate:48000,sources:states.map(s=>({id:s.id,source:s.custom?s.customName:s.title,sha256:s.custom?null:s.sha256,candidateId:s.candidateId||null,custom:s.custom,fadeMs:s.fade,normalization:s.id==='melody'?'clip peak 0.8':'clip peak 0.7',cuts:Object.fromEntries(s.clips.map((c,i)=>[c.id,[s.boundaries[i],s.boundaries[i+1]]]))}))};download(new Blob([JSON.stringify(settings,null,2)],{type:'application/json'}),'chowayo-cuts.json');status('区切り設定を保存');};
+$('#file').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;stop();const i=selected,s=active(),revision=s.revision=(s.revision||0)+1;try{if(file.size>30*1024*1024)throw Error('30 MB以内の音声を選んでください');const buffer=await audioContext().decodeAudioData(await file.arrayBuffer());if(buffer.duration<.05||buffer.duration>60)throw Error('0.05〜60秒の音声を選んでください');await decode(s);if(s.revision!==revision||states[i]!==s)return;s.buffer=buffer;s.waveform=null;s.custom=true;s.candidateId=null;s.customName=file.name;s.boundaries=Array.from({length:s.clips.length+1},(_,i)=>buffer.duration*i/s.clips.length);if(selected===i)show(i);}catch(error){status('読み込めません '+error.message,true);}};
+function theme(dark){document.documentElement.dataset.theme=dark?'dark':'light';$('#theme').textContent=dark?'ライト表示':'ダーク表示';draw();}
+$('#theme').onclick=()=>theme(document.documentElement.dataset.theme!=='dark');theme(matchMedia('(prefers-color-scheme: dark)').matches);
+new ResizeObserver(draw).observe($('.wave-wrap'));document.addEventListener('keydown',e=>{if(e.key==='Escape')stop();});
+show(0);tick();
+</script>
+</html>

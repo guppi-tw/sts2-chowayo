@@ -1,0 +1,12 @@
+{
+  "id": "Chowayo",
+  "name": "チョワヨ",
+  "author": "guppi-tw",
+  "description": "フールの旋律をチョワヨ順に統一。英語はCho Wah Yo。スピキ音声で旋律・被ダメージ・死亡・勝敗の声を変更します。",
+  "version": "v0.3.1",
+  "min_game_version": "0.113.0",
+  "has_pck": false,
+  "has_dll": true,
+  "dependencies": [],
+  "affects_gameplay": false
+}
