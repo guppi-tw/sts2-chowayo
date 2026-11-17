@@ -3,6 +3,11 @@
 Slay the Spire 2のフールの旋律を「チョ・ワー・ヨ」にする音声MODです。
 スピキの「チョ」「ワ」「ヨ」を鳴らし、被ダメージ・死亡・勝利・敗北の声も変更します。
 
+[![フールをスピキ化するチョワヨMODの紹介動画](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.3.1/thumbnail-v3.jpg)](https://youtu.be/rM--4ii0n3A)
+
+[紹介動画を見る](https://youtu.be/rM--4ii0n3A) — 約55秒のずんだもん解説。旋律・勝利・敗北ボイスをBGM付きの実演で紹介します。
+[紹介動画のMP4をダウンロード](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.3.1/Chowayo-Zundamon-introduction-v3.mp4)
+
 - 「キ」を「ヨ」に変更し、複合カードの名前をチョ→ワー→ヨの順に揃えます。
 - 「チョ・ワー」「チョ・ワー・ヨ」は演出と音声もこの順で再生します。
 - 旋律はかくれんぼ版の2回目を使用します。勝利時はかぼちゃ版の全編4.4秒を流します。
@@ -62,6 +67,8 @@ python3 mods/Chowayo/package.py
 [音声素材配布 ｽﾋﾟｷ編 FIRE猫Blog](https://fire-neko-blog.com/sound-supiki/)の音声を使用しています。
 [各音声の切り出し範囲と加工内容](mods/Chowayo/docs/third-party-audio.md)を記録しています。
 Slay the Spire 2およびトリッカルの非公式ファンMODです。音声の権利はそれぞれの権利者に帰属し、公式の承認を示すものではありません。
+
+紹介動画のナレーションは VOICEVOX:ずんだもん、スピキ画像は [MASIN MAROの配布素材](https://x.com/MasinMaro/status/2016741081229177203)（トリッカル / Trickcal）を使用しています。
 
 ## English
 
