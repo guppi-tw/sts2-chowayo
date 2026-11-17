@@ -1,0 +1,22 @@
+{
+  "youtubeId": "rhplrlj1ZcQ",
+  "url": "https://youtu.be/rhplrlj1ZcQ",
+  "title": "Chowayo チョワヨ | Slay the Spire 2 フールMOD 実戦デモ",
+  "visibility": "unlisted",
+  "durationSeconds": 14.532683,
+  "width": 1920,
+  "height": 1080,
+  "fps": 60,
+  "bgm": true,
+  "gameSoundEffects": true,
+  "modVoices": true,
+  "microphone": false,
+  "captions": false,
+  "workshopItemId": "3841064982",
+  "publishedAt": "2026-11-17",
+  "modVersion": "0.3.1",
+  "gameVersion": "0.113.1",
+  "gameBranch": "public-beta",
+  "downloadUrl": "https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.3.1/Chowayo-Fool-gameplay-with-bgm.mp4",
+  "sha256": "a3a4d34fde0224e2b5cb158ecacf8b0233a191dca178b889aba301873d54e770"
+}

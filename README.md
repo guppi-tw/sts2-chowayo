@@ -10,6 +10,9 @@ Slay the Spire 2のフールの旋律を「チョ・ワー・ヨ」にする音�
 - カードの効果・数値・内部ID・旋律判定は変えません。
 - 音量はゲームのマスター・効果音設定に追従します。
 
+[実戦動画を見る](https://youtu.be/rhplrlj1ZcQ) — BGM・効果音・スピキ音声入り、1080p・60fps。
+[MP4をダウンロード](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.3.1/Chowayo-Fool-gameplay-with-bgm.mp4)
+
 ## 導入
 
 [Steam Workshopでサブスクライブ](https://steamcommunity.com/sharedfiles/filedetails/?id=3841064982)

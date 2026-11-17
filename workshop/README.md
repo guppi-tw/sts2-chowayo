@@ -26,3 +26,11 @@ GitHubから再取得したZIPとSteamからダウンロードした全13ファ�
 確認用のSteamダウンロードでサブスクライブ状態は変更していません。
 
 2026年11月17日にサムネイルを実カードの画像に変更しました。撮影プログラムは終了コード0で完了し、既存セーブ・導入済みMODのハッシュ一致を確認しています。
+
+実戦動画はYouTubeに限定公開し、Steamの動画欄とGitHubに掲載しています。
+[1080p・60fpsの実戦動画](https://youtu.be/rhplrlj1ZcQ)では、ゲームのBGM・効果音・スピキ音声を収録しています。
+動画情報は `demo-video.json`、撮影手順は [record-demo/README.md](record-demo/README.md) に記録しています。
+
+動画の追加はSteam UGC APIの `AddItemPreviewVideo` と `SubmitItemUpdate` を使います。
+追加前に同じYouTube IDが登録されていないことを確認し、更新後に動画ID・公開状態・説明・MODのサイズを再取得して確認します。
+公式アップローダー v0.2.0は `previews` フォルダにない追加プレビューを更新時に削除するため、MOD本体を再アップロードした場合は動画を再登録してください。
