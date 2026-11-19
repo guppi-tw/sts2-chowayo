@@ -119,6 +119,8 @@ internal static class SmokeTest
                 Require(title.Contains("Cho Wah Yo+") && title.Contains("チョ・ワー・ヨ+") && !title.Contains("ワー・チョ・キ"), "Bilingual secondary locale");
                 view.QueueFree();
             }
+            LocManager.Instance.SetLanguage("jpn");
+            await IconSmokeTest.Run();
             if (System.Environment.GetEnvironmentVariable("CHOWAYO_TEST_AUDIO") == "1")
                 await AudioSmokeTest.Run();
             ModEntry.Logger.Info($"CHOWAYO TEST PASS: {cards.Count} card views, {changed} changed entries, tooltips, powers, format tokens, upgrades, locale reload; bilingual={bilingual}");

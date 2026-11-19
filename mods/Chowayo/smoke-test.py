@@ -85,9 +85,9 @@ try:
         output = log.read_text(errors="replace") if log.exists() else ""
         print(f"{phase}: exit code {result.returncode}; {log}", flush=True)
         for line in output.splitlines():
-            if "CHOWAYO TEST" in line or "CHOWAYO AUDIO" in line:
+            if "CHOWAYO TEST" in line or "CHOWAYO AUDIO" in line or "CHOWAYO ICON" in line:
                 print(line, flush=True)
-        if (result.returncode != 0 or "CHOWAYO TEST PASS:" not in output or
+        if (result.returncode != 0 or "CHOWAYO TEST PASS:" not in output or "CHOWAYO ICON PASS:" not in output or
                 (options.audio and "CHOWAYO AUDIO PASS:" not in output) or
                 "[ERROR]" in output or "ERROR: System." in output or
                 "Steam initialization skipped" not in output or "Steamworks initialization succeeded" in output):

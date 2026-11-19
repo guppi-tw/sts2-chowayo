@@ -17,7 +17,7 @@ expected = args.archive.with_suffix(".zip.sha256").read_text().split()[0]
 assert hashlib.sha256(args.archive.read_bytes()).hexdigest() == expected, "ZIP checksum mismatch"
 stage = root / ".artifacts/workshop/Chowayo"
 content = stage / "content"
-allowed = {"Chowayo.dll", "Chowayo.json", "README.ja.md", "SHA256SUMS.txt", "audio-guidelines.md", "docs/third-party-audio.md"}
+allowed = {"Chowayo.dll", "Chowayo.json", "README.ja.md", "SHA256SUMS.txt", "audio-guidelines.md", "docs/third-party-audio.md", "icons/speaki.png", "docs/third-party-images.md"}
 allowed.update(f"audio/{name}.wav" for name in ("cho", "wa", "yo", "hurt", "death", "victory", "defeat"))
 with zipfile.ZipFile(args.archive) as z:
     assert set(z.namelist()) == {"Chowayo/" + name for name in allowed}, "Unexpected release content"

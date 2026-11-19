@@ -12,7 +12,7 @@ public static class ModEntry
     public static void Initialize()
     {
         new Harmony("guppi-tw.Chowayo").PatchAll(typeof(ModEntry).Assembly);
-        Logger.Info("Chowayo v0.3.1 loaded successfully");
+        Logger.Info("Chowayo v0.4.0 loaded successfully");
         MelodyAudio.Ready = MelodyAudio.Initialize();
 #if DEBUG
         if (Environment.GetEnvironmentVariable("CHOWAYO_SMOKE_TEST") == "1")

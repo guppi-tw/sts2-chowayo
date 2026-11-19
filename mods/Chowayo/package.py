@@ -27,6 +27,8 @@ def main():
     files = {
         "Chowayo/Chowayo.dll": dll.read_bytes(),
         "Chowayo/Chowayo.json": (mod / "Chowayo.json").read_bytes(),
+        "Chowayo/icons/speaki.png": (mod / "icons/speaki.png").read_bytes(),
+        "Chowayo/docs/third-party-images.md": (mod / "docs/third-party-images.md").read_bytes(),
     }
     if args.with_audio:
         for name in ("cho", "wa", "yo", "hurt", "death", "victory", "defeat"):
@@ -49,9 +51,13 @@ def main():
 
 {flavor}。Slay the Spire 2のフール用MODです。
 日本語は「チョ・ワー・ヨ」、英語は「Cho Wah Yo」の順にカード名と説明を揃えます。
+旋律アイコンは3色のスピキです。チョが青、ワがピンク、ヨがオレンジになります。
 カードの効果・数値・旋律判定は変更しません。Bilingual Spireとの併用に対応しています。
 
 {behavior}
+
+画像素材の出典・加工内容は docs/third-party-images.md を参照してください。
+元のアイコンに戻す場合は、ゲームを終了して icons フォルダを取り除きます。
 
 ## 導入
 
