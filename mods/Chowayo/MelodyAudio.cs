@@ -182,10 +182,10 @@ internal static class SfxVolumePatch
 [HarmonyPatch(typeof(Creature), nameof(Creature.LoseHpInternal))]
 internal static class FoolHurtVoicePatch
 {
-    private static void Postfix(Creature __instance, DamageResult __result)
+    private static void Postfix(Creature __instance, HpLossResult __result, bool dryRun)
     {
-        if (!NonInteractiveMode.IsActive && __instance.Player?.Character is Fool &&
-            __result.UnblockedDamage > 0 && !__instance.IsDead && CombatManager.Instance.IsInProgress)
+        if (!dryRun && !NonInteractiveMode.IsActive && __instance.Player?.Character is Fool &&
+            __result.hpLost > 0 && !__instance.IsDead && CombatManager.Instance.IsInProgress)
             MelodyAudio.TryPlay("hurt", 1);
     }
 }

@@ -17,6 +17,7 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
+using MegaCrit.Sts2.Core.TestSupport;
 using MegaCrit.Sts2.Core.Unlocks;
 using MegaCrit.Sts2.Core.ValueProps;
 
@@ -68,8 +69,23 @@ internal static class AudioSmokeTest
                 MelodyAudio.Played.Clear();
                 var card = player.Creature.CombatState!.CreateCard(ModelDb.AllCards.First(c => c.Id.Entry == id), player);
                 var originalTags = card.Tags.ToArray();
-                await CardCmd.AutoPlay(new ThrowingPlayerChoiceContext(), card,
-                    card.TargetType == TargetType.AnyEnemy ? player.Creature.CombatState!.Enemies.First() : null);
+                CardModel? selectedDiscard = null;
+                IDisposable? selection = null;
+                if (id == "WAH_KI")
+                {
+                    var discard = CardPile.Get(PileType.Discard, player)!.Cards;
+                    Require(discard.Count >= 2, "Wah Ki has multiple discard choices");
+                    selectedDiscard = discard[0];
+                    var selector = new TestCardSelector();
+                    selector.PrepareToSelect(new[] { selectedDiscard });
+                    selection = manager.CardSelectorStack.PushSelector(player, selector);
+                }
+                using (selection)
+                    await CardCmd.AutoPlay(new ThrowingPlayerChoiceContext(), card,
+                        card.TargetType == TargetType.AnyEnemy ? player.Creature.CombatState!.Enemies.First() : null);
+                if (selectedDiscard is not null)
+                    Require(ReferenceEquals(CardPile.Get(PileType.Draw, player)!.Cards[0], selectedDiscard),
+                        "Wah Ki puts the selected discard on top of the draw pile");
                 await Wait(.45);
                 Require(string.Join(',', MelodyAudio.Played) == expected,
                     $"{id} sound order: {string.Join(',', MelodyAudio.Played)} != {expected}");
@@ -107,6 +123,11 @@ internal static class AudioSmokeTest
             await Wait(.5);
             Require(!NCombatRoom.Instance!.GetChildren().OfType<AudioStreamPlayer>().Any(), "Finished audio nodes cleaned up");
             MelodyAudio.Played.Clear();
+            var hpBeforePreview = player.Creature.CurrentHp;
+            var preview = player.Creature.LoseHpInternal(2, dryRun: true);
+            Require(preview.hpLost == 2 && player.Creature.CurrentHp == hpBeforePreview,
+                "Damage preview predicts HP loss without changing HP");
+            Require(MelodyAudio.Played.Count == 0, "Damage preview does not play hurt voice");
             await CreatureCmd.Damage(new ThrowingPlayerChoiceContext(), player.Creature, 2, ValueProp.Unblockable, null, null);
             await Wait(1.1);
             Require(string.Join(',', MelodyAudio.Played) == "hurt", "Actual HP loss plays Fool hurt voice");
@@ -151,7 +172,7 @@ internal static class AudioSmokeTest
             await Wait(2.8);
             var defeatPcm = capture.GetBuffer(capture.GetFramesAvailable());
             Require(defeatPcm.Any(s => Math.Abs(s.X) > .001f), "Defeat voice produces PCM");
-            ModEntry.Logger.Info("CHOWAYO AUDIO PASS: 8 real card plays, ordered voices, actual PCM, native SFX/master mute, HP loss/blocked hit/death cue, full 4.4s victory across room transition, real game-over defeat, unchanged tags, node cleanup");
+            ModEntry.Logger.Info("CHOWAYO AUDIO PASS: 8 real card plays, ordered voices, actual PCM, native SFX/master mute, silent damage preview, single HP-loss voice/blocked hit/death cue, full 4.4s victory across room transition, real game-over defeat, unchanged tags, node cleanup");
         }
         finally
         {

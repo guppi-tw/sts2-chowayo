@@ -30,7 +30,7 @@ internal static class MelodyNames
         ["ita"] = English, ["pol"] = English, ["ptb"] = English, ["spa"] = English,
         ["deu"] = new("Cho", "Wa", "Ki", "Yo"),
         ["kor"] = new("초", "와", "키", "요"),
-        ["rus"] = new("Чу", "Вах", "Ки", "Йо"),
+        ["rus"] = new("Чу", "Ва", "Ки", "Йо"),
         ["tur"] = new("Ço", "Vah", "Ki", "Yo"),
         ["zhs"] = new("啾", "哇", "叽", "哟", WholeWord: false),
         ["zht"] = new("啾", "哇", "嘰", "喲", "", WholeWord: false),

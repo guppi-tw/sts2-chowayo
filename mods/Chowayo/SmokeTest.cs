@@ -84,18 +84,28 @@ internal static class SmokeTest
             Require(new LocString("cards", "WAH_CHO.title").GetRawText() == "Cho Wah", "English two-note order");
             Require(new LocString("cards", "WAH_CHO_KI.title").GetRawText() == "Cho Wah Yo", "English three-note order");
             Require(new LocString("static_hover_tips", "KI_MELODY.title").GetRawText() == "Yo Melody", "English tooltip");
-            Require(new LocString("cards", "KI_VERSE.description").GetRawText().Contains("“Cho”, “Wah”, or “Yo”"), "English description order");
+            var verseDescription = new LocString("cards", "KI_VERSE.description").GetRawText();
+            Require(verseDescription.Contains("“Cho” or “Wah”") && !verseDescription.Contains("“Yo”"),
+                "English description order preserves the current two-note effect");
             foreach (var (locale, expected) in new Dictionary<string, string>
             {
                 ["deu"] = "Cho Wa Yo", ["eng"] = "Cho Wah Yo", ["esp"] = "Cho Wah Yo",
                 ["fra"] = "Cho Wah Yo", ["ind"] = "Cho Wah Yo", ["ita"] = "Cho Wah Yo",
                 ["kor"] = "초 와 요", ["pol"] = "Cho Wah Yo", ["ptb"] = "Cho Wah Yo",
-                ["rus"] = "Чу Вах Йо", ["spa"] = "Cho Wah Yo", ["tur"] = "Ço Vah Yo",
+                ["rus"] = "Чу Ва Йо", ["spa"] = "Cho Wah Yo", ["tur"] = "Ço Vah Yo",
                 ["zhs"] = "啾 哇 哟", ["zht"] = "啾哇喲",
             })
             {
                 LocManager.Instance.SetLanguage(locale);
                 Require(new LocString("cards", "WAH_CHO_KI.title").GetRawText() == expected, $"{locale}: three-note title");
+                if (locale == "rus")
+                {
+                    var description = new LocString("potions", "BOTTLED_SONG.description").GetRawText();
+                    Require(description.Contains("Чу") && description.Contains("Ва") && description.Contains("Йо") &&
+                        description.IndexOf("Чу", StringComparison.Ordinal) < description.IndexOf("Ва", StringComparison.Ordinal) &&
+                        description.IndexOf("Ва", StringComparison.Ordinal) < description.IndexOf("Йо", StringComparison.Ordinal),
+                        "Russian potion lists Cho, Wah, Yo in order");
+                }
                 foreach (var tableName in new[] { "cards", "powers", "potions", "relics", "static_hover_tips" })
                 {
                     using var source = Godot.FileAccess.Open($"res://localization/{locale}/{tableName}.json", Godot.FileAccess.ModeFlags.Read);

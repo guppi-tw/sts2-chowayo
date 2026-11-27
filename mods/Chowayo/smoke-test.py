@@ -11,11 +11,17 @@ import tempfile
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--audio", action="store_true", help="Play melody cards in a real combat and record mixer output")
+parser.add_argument("--game-dir", type=Path,
+                    default=Path.home() / "Library/Application Support/Steam/steamapps/common/Slay the Spire 2",
+                    help="Game install directory (also supports external Steam libraries)")
 options = parser.parse_args()
 
 root = Path(__file__).resolve().parents[2]
 project = Path(__file__).resolve().parent / "Chowayo.csproj"
-game = Path.home() / "Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app/Contents/MacOS/Slay the Spire 2"
+game_dir = options.game_dir.expanduser().resolve()
+game = game_dir / "SlayTheSpire2.app/Contents/MacOS/Slay the Spire 2"
+if not game.is_file():
+    raise SystemExit(f"Game not found: {game}. Set --game-dir to its install directory.")
 if subprocess.run(["pgrep", "-f", str(game)], capture_output=True).returncode == 0:
     raise SystemExit("Close Slay the Spire 2 before running this test.")
 
@@ -34,7 +40,8 @@ test_dir = Path(tempfile.mkdtemp(prefix="test-", dir=artifacts))
 backup = test_dir / "original-default"
 before = hashes(default)
 steam_before = hashes(data / "steam")
-subprocess.run(["dotnet", "build", str(project), "-t:DeployMod"], cwd=root, check=True)
+build = ["dotnet", "build", str(project), f"-p:Sts2Path={game_dir}"]
+subprocess.run([*build, "-t:DeployMod"], cwd=root, check=True)
 
 if default.exists():
     default.rename(backup)
@@ -44,7 +51,7 @@ try:
     settings_dir.mkdir(parents=True)
     marker.write_text(str(backup))
     local_bilingual = game.parent / "mods/BilingualSpire/BilingualSpire.dll"
-    workshop_bilingual = Path.home() / "Library/Application Support/Steam/steamapps/workshop/content/2868840/3840138909"
+    workshop_bilingual = game_dir.parents[1] / "workshop/content/2868840/3840138909"
     if not local_bilingual.exists() and (workshop_bilingual / "BilingualSpire.dll").exists():
         candidate = game.parent / "mods/ChowayoBilingualTest"
         candidate.mkdir()
@@ -55,6 +62,8 @@ try:
     for folder, source in [(game.parent / "mods", "ModsDirectory"), (game.parent / "mods_STEAMTEST", "SteamWorkshop")]:
         if folder.exists():
             for manifest in folder.rglob("*.json"):
+                if manifest.name.startswith("._"):
+                    continue
                 entry = json.loads(manifest.read_text())
                 if "id" in entry and "has_dll" in entry:
                     mods.append({"id": entry["id"], "source": source, "is_enabled": False})
@@ -101,7 +110,7 @@ finally:
         for name in ("BilingualSpire.dll", "BilingualSpire.json"):
             (temporary_bilingual / name).unlink(missing_ok=True)
         temporary_bilingual.rmdir()
-    subprocess.run(["dotnet", "build", str(project), "-c", "Release", "-t:DeployMod"], cwd=root, check=True)
+    subprocess.run([*build, "-c", "Release", "-t:DeployMod"], cwd=root, check=True)
     if hashes(default) != before or hashes(data / "steam") != steam_before:
         raise RuntimeError("Save hashes did not match after restoration.")
     print("PASS: Steam saves unchanged; original non-Steam saves restored exactly; Release installed.", flush=True)
