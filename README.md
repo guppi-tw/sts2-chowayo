@@ -4,6 +4,7 @@ Slay the Spire 2のフールの旋律を「チョ・ワー・ヨ」にする音�
 スピキの「チョ」「ワ」「ヨ」を鳴らし、被ダメージ・死亡・勝利・敗北の声も変更します。
 
 v0.4.1はゲームのpublic-beta v0.114.0に対応しています。更新後にMODを読み込めなくなる問題を修正しました。
+v0.4.2では「ヨ・ヴァース」のカード・パワー説明3箇所を「チョ→ワー」の順に揃えました。
 
 v0.4.0では弓の上の旋律アイコンもスピキに変更しました。チョは青、ワはピンク、ヨはオレンジです。
 元の出現・移動アニメーションと、カーソルを合わせたときの説明はそのままです。
@@ -33,7 +34,7 @@ v0.4.0では弓の上の旋律アイコンもスピキに変更しました。�
 Steam版はサブスクライブ後にダウンロードを待ち、設定 → MOD設定で「チョワヨ」を有効にします。
 手動でZIP版を入れている場合は、ゲームを終了して既存の `mods/Chowayo` を別の場所へ移してから切り替えてください。
 
-[音声・アイコン入りZIPをダウンロード](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.4.1/Chowayo-v0.4.1-with-audio.zip)
+[音声・アイコン入りZIPをダウンロード](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.4.2/Chowayo-v0.4.2-with-audio.zip)
 
 1. SteamでSlay the Spire 2のゲームのバージョンを `public-beta` にし、v0.114.0以降へ更新します。
 2. ゲームを終了し、ZIPを展開します。
@@ -48,10 +49,14 @@ Macではゲームのアプリを右クリック →「パッケージの内容�
 
 更新時は古い `Chowayo` フォルダを退避してから入れ替えます。
 解除する場合も、ゲームを終了してこのフォルダを取り除きます。
-[音声なし版](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.4.1/Chowayo-v0.4.1-no-audio.zip)もあります。こちらも3色のアイコンを含み、演出と音声の順番はゲーム本来のままです。
+[音声なし版](https://github.com/guppi-tw/sts2-chowayo/releases/download/v0.4.2/Chowayo-v0.4.2-no-audio.zip)もあります。こちらも3色のアイコンを含み、演出と音声の順番はゲーム本来のままです。
 元の旋律アイコンに戻す場合は、ゲームを終了して `Chowayo/icons` フォルダを取り除きます。
 
 ## 動作確認
+
+2026年11月28日、Mac Apple Silicon・public-beta v0.114.0で説明文の修正を確認しました。
+単独・Bilingual Spire併用で、日本語の起動直後から旋律カード19枚の表示と15言語の書式保持を検証済みです。
+Release版もBilingual Spire・BaseLib・QuickRestartを有効にした環境で起動し、新カード「楽観主義」を含むフール91枚のカード名表示と、説明文3箇所の順序を確認しました。
 
 2026年11月27日、Mac Apple Silicon・public-beta v0.114.0でv0.4.1を確認しました。
 単独・Bilingual Spire v0.5.7併用の両方で、カード表示、15言語、3色アイコン、8回のカード使用、被弾・死亡・勝敗ボイスの実ゲーム検証が終了コード0でした。
@@ -79,6 +84,7 @@ python3 mods/Chowayo/package.py
 音声はGitのソース履歴には収録していません。リリースの `Chowayo/audio` にある7つのWAVを `mods/Chowayo/local-audio` に置き、`python3 mods/Chowayo/package.py --with-audio` を実行すると音声入りZIPを作成できます。
 実ゲーム検証はゲームを終了してから `python3 mods/Chowayo/smoke-test.py --audio` を実行します。併用検証にはBilingual Spireの導入も必要です。
 外付けドライブなどのSteamライブラリを使う場合は、`--game-dir "/path/to/Slay the Spire 2"` でインストール先を指定できます。通常のビルドでは `-p:Sts2Path="/path/to/Slay the Spire 2"` を指定するか、`local.props` に設定します。
+`--mod-settings "/path/to/settings.save"` を付けると、その設定で有効なMODと読み込み順を一時プロフィールに再現できます。元の設定ファイルは変更しません。
 音声編集HTMLの生成には、開発時に使用したローカルの原音・素材メタデータが別途必要です。
 
 ## 素材の出典
@@ -97,6 +103,7 @@ It includes Speaki voice clips for melodies, damage, death, victory and defeat. 
 Version 0.4.0 also replaces the melody icons beside the bow with Speaki faces: blue for Cho, pink for Wah, and orange for Yo. Native spawn/movement animations and hover descriptions are preserved. Both downloads include the icons.
 The victory cue plays the full 4.4-second pumpkin song. Volume follows the game's master and SFX settings.
 Version 0.4.1 fixes loading on public-beta v0.114.0 after the game's HP-loss API changed. Damage previews remain silent; actual HP loss plays the hurt voice once. Requires game v0.114.0 or later.
+Version 0.4.2 puts Cho before Wah in three Japanese Yo Verse card/power descriptions. Card effects and values are unchanged.
 Tested on macOS Apple Silicon with public-beta v0.114.0, alone and with Bilingual Spire v0.5.7. Windows, Linux and the stable branch are untested.
 Download the voice ZIP from Releases, extract `Chowayo` into the game's `mods` directory, and enable it in Mod Settings.
 This is an unofficial fan mod. Third-party audio is credited above and in the included source notes.

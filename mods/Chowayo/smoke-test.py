@@ -11,6 +11,7 @@ import tempfile
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--audio", action="store_true", help="Play melody cards in a real combat and record mixer output")
+parser.add_argument("--mod-settings", type=Path, help="Reproduce enabled mods and load order from this settings.save in the isolated test profile")
 parser.add_argument("--game-dir", type=Path,
                     default=Path.home() / "Library/Application Support/Steam/steamapps/common/Slay the Spire 2",
                     help="Game install directory (also supports external Steam libraries)")
@@ -29,6 +30,10 @@ def hashes(directory):
     return {str(p.relative_to(directory)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in directory.rglob("*") if p.is_file()} if directory.exists() else {}
 
+def ignore_missing_sidecar(function, path, error):
+    if not isinstance(error[1], FileNotFoundError):
+        raise error[1]
+
 data = Path.home() / "Library/Application Support/SlayTheSpire2"
 default = data / "default"
 marker = default / ".chowayo-test"
@@ -40,19 +45,40 @@ test_dir = Path(tempfile.mkdtemp(prefix="test-", dir=artifacts))
 backup = test_dir / "original-default"
 before = hashes(default)
 steam_before = hashes(data / "steam")
+(test_dir / "original-save-hashes.json").write_text(json.dumps({"default": before, "steam": steam_before}))
 build = ["dotnet", "build", str(project), f"-p:Sts2Path={game_dir}"]
 subprocess.run([*build, "-t:DeployMod"], cwd=root, check=True)
 
 if default.exists():
     default.rename(backup)
 temporary_bilingual = None
+temporary_installed = None
 try:
     settings_dir = default / "1"
     settings_dir.mkdir(parents=True)
     marker.write_text(str(backup))
     local_bilingual = game.parent / "mods/BilingualSpire/BilingualSpire.dll"
     workshop_bilingual = game_dir.parents[1] / "workshop/content/2868840/3840138909"
-    if not local_bilingual.exists() and (workshop_bilingual / "BilingualSpire.dll").exists():
+    configured_mods = None
+    if options.mod_settings:
+        configured_mods = [m for m in json.loads(options.mod_settings.read_text())["mod_settings"]["mod_list"] if m["is_enabled"]]
+        configured_ids = {m["id"] for m in configured_mods}
+        if "Chowayo" not in configured_ids:
+            raise RuntimeError("Chowayo must be enabled in the supplied mod settings.")
+        candidate = game.parent / "mods/ChowayoInstalledTest"
+        candidate.mkdir()
+        temporary_installed = candidate
+        for item in workshop_bilingual.parent.iterdir():
+            if not item.is_dir():
+                continue
+            for manifest in item.rglob("*.json"):
+                if manifest.name.startswith("._"):
+                    continue
+                entry = json.loads(manifest.read_text(encoding="utf-8-sig"))
+                if isinstance(entry, dict) and entry.get("id") in configured_ids - {"Chowayo"}:
+                    shutil.copytree(item, candidate / item.name, ignore=shutil.ignore_patterns("._*"))
+                    break
+    elif not local_bilingual.exists() and (workshop_bilingual / "BilingualSpire.dll").exists():
         candidate = game.parent / "mods/ChowayoBilingualTest"
         candidate.mkdir()
         temporary_bilingual = candidate
@@ -64,22 +90,32 @@ try:
             for manifest in folder.rglob("*.json"):
                 if manifest.name.startswith("._"):
                     continue
-                entry = json.loads(manifest.read_text())
+                entry = json.loads(manifest.read_text(encoding="utf-8-sig"))
                 if "id" in entry and "has_dll" in entry:
                     mods.append({"id": entry["id"], "source": source, "is_enabled": False})
     if not any(m["id"] == "BilingualSpire" for m in mods):
         raise RuntimeError("Install Bilingual Spire before testing compatibility.")
-    for bilingual in (False, True):
-        phase = "bilingual" if bilingual else "standalone"
+    phases = [("standalone", False), ("bilingual", True)]
+    if configured_mods is not None:
+        phases = [("installed", "BilingualSpire" in configured_ids)]
+        order = {m["id"]: i for i, m in enumerate(configured_mods)}
+        missing = configured_ids - {m["id"] for m in mods}
+        if missing:
+            raise RuntimeError(f"Enabled mods were not found: {sorted(missing)}")
+        mods.sort(key=lambda m: order.get(m["id"], len(order)))
+    for phase, bilingual in phases:
         for mod in mods:
-            mod["is_enabled"] = mod["id"] == "Chowayo" or (bilingual and mod["id"] == "BilingualSpire")
+            mod["is_enabled"] = (mod["id"] in configured_ids if configured_mods is not None else
+                                 mod["id"] == "Chowayo" or (bilingual and mod["id"] == "BilingualSpire"))
         settings = {
             "schema_version": 8, "language": "jpn", "seen_ea_disclaimer": True, "skip_intro_logo": True,
             "mod_settings": {"mods_enabled": True, "mod_list": mods},
         }
         (settings_dir / "settings.save").write_text(json.dumps(settings))
+        bilingual_config = test_dir / f"{phase}-bilingual-settings.json"
+        bilingual_config.write_text(json.dumps({"First": "eng", "Second": "jpn", "Mode": "Second"}))
         env = dict(os.environ, CHOWAYO_SMOKE_TEST="1", CHOWAYO_TEST_BILINGUAL=str(int(bilingual)),
-                   BILINGUAL_SPIRE_CONFIG_PATH=str(test_dir / "bilingual-settings.json"))
+                   BILINGUAL_SPIRE_CONFIG_PATH=str(bilingual_config))
         if options.audio:
             env["CHOWAYO_TEST_AUDIO"] = "1"
             env["CHOWAYO_AUDIO_RECORDING"] = str(test_dir / f"{phase}-combat-voices.wav")
@@ -110,6 +146,8 @@ finally:
         for name in ("BilingualSpire.dll", "BilingualSpire.json"):
             (temporary_bilingual / name).unlink(missing_ok=True)
         temporary_bilingual.rmdir()
+    if temporary_installed is not None:
+        shutil.rmtree(temporary_installed, onerror=ignore_missing_sidecar)
     subprocess.run([*build, "-c", "Release", "-t:DeployMod"], cwd=root, check=True)
     if hashes(default) != before or hashes(data / "steam") != steam_before:
         raise RuntimeError("Save hashes did not match after restoration.")

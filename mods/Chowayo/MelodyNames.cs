@@ -92,6 +92,7 @@ internal static class MelodyNames
             var renamed = language != "jpn" ? Rename($"{table}/{key}", original, Languages[language])
                 : Titles.GetValueOrDefault($"{table}/{key}") ?? original
                 .Replace("「ワー」「チョ」「キ」", "「チョ」「ワー」「ヨ」", StringComparison.Ordinal)
+                .Replace("「ワー」か「チョ」", "「チョ」か「ワー」", StringComparison.Ordinal)
                 .Replace("キの旋律", "ヨの旋律", StringComparison.Ordinal)
                 .Replace("「キ」", "「ヨ」", StringComparison.Ordinal);
             if (renamed != original) __result[key] = renamed;

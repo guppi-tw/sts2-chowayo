@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.4.1</Version>
+    <Version>0.4.2</Version>
     <Sts2Path Condition="'$(Sts2Path)' == ''">$(HOME)/Library/Application Support/Steam/steamapps/common/Slay the Spire 2</Sts2Path>
     <Sts2Architecture Condition="'$(Sts2Architecture)' == ''">arm64</Sts2Architecture>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">$(Sts2Path)/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_$(Sts2Architecture)</Sts2DataDir>

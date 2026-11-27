@@ -29,10 +29,19 @@ internal static class SmokeTest
             {
                 Require(switcher is not null, "Bilingual Spire loaded");
                 await (Task)AccessTools.Property(switcher, "Ready").GetValue(null)!;
-                AccessTools.Method(switcher, "SwitchTo").Invoke(null, ["jpn"]);
             }
-            else LocManager.Instance.SetLanguage("jpn");
-
+            foreach (var (table, key, japanese, english) in new[]
+            {
+                ("cards", "KI_HOP.title", "ヨ・ホップ", "Yo Hop"),
+                ("cards", "WAH_CHO.title", "チョ・ワー", "Cho Wah"),
+                ("cards", "WAH_CHO_KI.title", "チョ・ワー・ヨ", "Cho Wah Yo"),
+                ("static_hover_tips", "KI_MELODY.title", "ヨの旋律", "Yo Melody"),
+            })
+            {
+                var initial = new LocString(table, key).GetRawText();
+                ModEntry.Logger.Info($"CHOWAYO TEST STARTUP: {table}/{key} = {initial}");
+                Require(initial == japanese || initial == english, $"Cold startup {table}/{key}: {initial}");
+            }
             var cards = new Dictionary<string, string>
             {
                 ["KI_CHANT"] = "ヨ・チャント", ["KI_HOP"] = "ヨ・ホップ",
@@ -42,6 +51,16 @@ internal static class SmokeTest
                 ["WAH_CHO_KI"] = "チョ・ワー・ヨ", ["WAH_TOUCH"] = "ワー・タッチ",
                 ["CHO_FIRM"] = "チョ・ファーム",
             };
+            using (var source = Godot.FileAccess.Open("res://localization/jpn/cards.json", Godot.FileAccess.ModeFlags.Read))
+            {
+                var originals = JsonSerializer.Deserialize<Dictionary<string, string>>(source.GetAsText())!;
+                foreach (var model in ModelDb.AllCards.Where(c => c.Tags.Any(t => t is CardTag.Cho or CardTag.Wah or CardTag.Ki)))
+                {
+                    var original = originals[$"{model.Id.Entry}.title"];
+                    cards.TryAdd(model.Id.Entry, original.Replace("ワー・チョ", "チョ・ワー")
+                        .Replace("キ・", "ヨ・").Replace("・キ", "・ヨ"));
+                }
+            }
             foreach (var (id, title) in cards)
             {
                 var card = ModelDb.AllCards.First(c => c.Id.Entry == id).ToMutable();
@@ -68,12 +87,16 @@ internal static class SmokeTest
                     Require(!actual.Contains("キの旋律") && !actual.Contains("「キ」"), $"{tableName}/{key}: no old melody term");
                     Require(Tokens(value) == Tokens(actual), $"{tableName}/{key}: numbers, variables and tags preserved");
                     if (!value.Contains("キの旋律") && !value.Contains("「キ」") &&
-                        !value.Contains("キ・") && !value.Contains("・キ") && key != "WAH_CHO.title")
+                        !value.Contains("キ・") && !value.Contains("・キ") && !value.Contains("「ワー」か「チョ」") && key != "WAH_CHO.title")
                         Require(actual == value, $"{tableName}/{key}: unrelated text preserved");
                 }
             }
             Require(LocManager.Instance.GetTable("static_hover_tips").GetRawText("KI_MELODY.title") == "ヨの旋律", "Melody tooltip");
             Require(LocManager.Instance.GetTable("powers").GetRawText("KI_VERSE_POWER.title") == "ヨ・ヴァース", "Power title");
+            foreach (var (table, key) in new[] { ("cards", "KI_VERSE.description"),
+                ("powers", "KI_VERSE_POWER.description"), ("powers", "KI_VERSE_POWER.smartDescription") })
+                Require(new LocString(table, key).GetRawText().Contains("「チョ」か「ワー」"),
+                    $"Japanese two-note description order: {table}/{key}");
 
             var triple = ModelDb.AllCards.First(c => c.Id.Entry == "WAH_CHO_KI").ToMutable();
             triple.UpgradeInternal();
